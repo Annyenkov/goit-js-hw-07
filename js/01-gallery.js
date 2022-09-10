@@ -4,17 +4,25 @@ import { galleryItems } from './gallery-items.js';
 const cardContainer = document.querySelector('.gallery');
 const cardsMarkup = createGalleryCardsMarkup(galleryItems);
 cardContainer.insertAdjacentHTML('beforeend', cardsMarkup);
-cardContainer.addEventListener('click', onCardContainerClick);
 
-function onCardContainerClick(evt) {
-  const instance = basicLightbox.create(`
-		<img width="1400" height="900" src="${evt.target.dataset.source}">
-	`);
+const onCardContainerClick = (evt) => {
   if (evt.target.nodeName !== "IMG") {
     return;
   }
+  const instance = basicLightbox.create(`
+		<img width="1400" height="900" src="${evt.target.dataset.source}">
+	`, {
+    onShow: (instance) => {
+      document.addEventListener('keydown', closeModal);
+      function closeModal(evt) {
+        if ( evt.key === "Escape" ) {
+			    instance.close();
+	        }
+        }
+      }
+    });
   instance.show();
-}
+};
 
 function createGalleryCardsMarkup(galleryItems) {
   return galleryItems.map(({preview, original, description}) => {
@@ -33,3 +41,6 @@ function createGalleryCardsMarkup(galleryItems) {
   })
     .join('');
 }
+
+cardContainer.addEventListener('click', onCardContainerClick);
+document.addEventListener('keydown', onCardContainerClick);
