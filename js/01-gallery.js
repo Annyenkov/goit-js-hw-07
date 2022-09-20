@@ -15,11 +15,12 @@ const onCardContainerClick = (evt) => {
     onShow: (instance) => {
       document.addEventListener('keydown', closeModal);
       function closeModal(evt) {
-        if ( evt.key === "Escape" ) {
-			    instance.close();
+        if (evt.key === "Escape") {
+          instance.close();
+          document.removeEventListener('keydown', closeModal);
 	        }
-        }
       }
+    }
     });
   instance.show();
 };
